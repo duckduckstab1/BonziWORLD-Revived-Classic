@@ -65,8 +65,6 @@ var stickers = {
     bye:"bye i'm leaving",
     kiddie:"kiddie",
 }
-const Discord = require('discord.js')
-const client = new Discord.Client()
 const log = require("./log.js").log;
 const Ban = require("./ban.js");
 const Utils = require("./utils.js");
