@@ -200,9 +200,6 @@ exports.mute = function(ip, length, reason) {
 	exports.saveMutes();
 };
 
-const Discord = require('discord.js')
-const client = new Discord.Client()
-
 exports.addReport = function(name, username, reason, reporter) {
 	var sockets = io.sockets.sockets;
 	var socketList = Object.keys(sockets);
