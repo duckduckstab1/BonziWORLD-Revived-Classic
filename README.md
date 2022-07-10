@@ -1,3 +1,6 @@
+BonziWORLD Revived Classic is a older version of BonziWORLD Revived (the original) released in 2019. However, due to obvious reasons, This software has since then discontinued and is not supported.
+
+
 ## Dependencies
 - Node.js and npm
 - Ruby
@@ -8,7 +11,7 @@
 ## Setup
 In a terminal/command prompt, navigate to where you'd like BonziWORLD to be placed and run the following:
 ```
-git clone https://github.com/mrnotesonic/BonziWORLD-Revived
+git clone https://github.com/Seamusmario/BonziWORLD-Revived-Classic
 cd BonziWORLD-Revived
 ```
 
