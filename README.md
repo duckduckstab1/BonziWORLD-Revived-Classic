@@ -1,5 +1,6 @@
-BonziWORLD Revived Classic is a older version of BonziWORLD Revived (the original) released in 2019. However, due to obvious reasons, This software has since then discontinued and is not supported.
+## BonziWORLD Revived Classic
 
+BonziWORLD Revived Classic is a re-release of an older version of BonziWORLD Revived (the original) released in 2019. However, due to obvious reasons, This software has since then discontinued and is not supported.
 
 ## Dependencies
 - Node.js and npm
@@ -24,4 +25,4 @@ node index.js
 After this, BonziWORLD will be accessible on port 3000. (http://localhost:3000/)
 ## Disclaimer
 I'm not responsible if you screw up anything with your computer while setting this up. I have no idea how you would, but someone will find a way. I also will not provide support for installing dependencies. If you have everything installed properly, the above commands will work.
-License: MIT.
+License: None.
