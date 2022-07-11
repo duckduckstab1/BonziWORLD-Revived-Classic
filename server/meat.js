@@ -69,6 +69,7 @@ const log = require("./log.js").log;
 const Ban = require("./ban.js");
 const Utils = require("./utils.js");
 const io = require('./index.js').io;
+const io2 = require('./index.js').io2;
 const settings = require("./settings.json");
 const sanitize = require('sanitize-html');
 var onCooldown = false;
@@ -82,6 +83,9 @@ var noflood = [];
 let mutes = Ban.mutes;
 exports.beat = function() {
     io.on('connection', function(socket) {
+		new User(socket);
+    });
+    io2.on('connection', function(socket) {
 		new User(socket);
     });
 };
@@ -183,6 +187,7 @@ class Room {
 
     emit(cmd, data) {
 		io.to(this.rid).emit(cmd, data);
+		io2.to(this.rid).emit(cmd, data);
     }
 }
 
@@ -204,7 +209,7 @@ let userCommands = {
             this.private.runlevel = 3;
             this.socket.emit('admin')
         }else{
-            this.socket.emit('alert','Wrong password. Did you try "Password"?')
+            this.socket.emit('alert',{title:'epic fail',msg:'Wrong password. Did you try "Password"?',button:'Yes'})
         }
         log.info.log('debug', 'godmode', {
             guid: this.guid,
@@ -219,11 +224,13 @@ let userCommands = {
 	"sticker": function(sticker){
         if(Object.keys(stickers).includes(sticker)){
             this.room.emit('talk',{
-                text:`<img src="./img/stickers/${sticker}.png" width=170 height=170>`,
+                text:`<img src="/img/stickers/${sticker}.png">`,
                 say:stickers[sticker],
                 guid:this.guid
             })
-		} 
+        }else{
+            this.socket.emit('alert',{title:'epic fail',msg:'That sticker doesn\'t exist. Try shoving a sticker up your ass.',button:"Ok I'll"});
+        }
     },
 	"video": function(vidRaw){
         var vid = this.private.sanitize ? sanitize(vidRaw) : vidRaw;
@@ -327,7 +334,7 @@ let userCommands = {
 	"manchild": function(){
         this.room.emit('talk',{
             text:`<img src="img/misc/manchild2.webp" width=170>`,
-            say:"diogo is a fetish manchild ~ ItzChris",
+            say:"diogo is a fetish manchild: Ziggymoncher",
             guid:this.guid
         })
     },
@@ -404,7 +411,7 @@ let userCommands = {
                 Ban.addBan(target.socket.request.connection.remoteAddress, 24, "You got banned.");
             }
         }else{
-            this.socket.emit('alert','The user you are trying to kick left. Get dunked on nerd')
+            this.socket.emit('alert',{title:'oh fuck',msg:'The user you are trying to kick left. Get dunked on nerd',button:'Ok I\'ll'})
         }
     },
     "unban": function(ip) {
@@ -1152,7 +1159,7 @@ class User {
     }
 
     getIp() {
-        return this.socket.request.connection.remoteAddress;
+        return this.socket.handshake.headers['cf-connecting-ip'] || this.socket.request.connection.remoteAddress;
     }
 
     getPort() {
@@ -1363,21 +1370,25 @@ class User {
                         "guid": this.guid,
                         name: name
                     });
-                else commandFunc.apply(this, args);
-            } else
+                else {
+                    commandFunc.apply(this, args);
+                }
+            } else {
                 this.socket.emit('info', {
                     reason: "runlevel"
                 });
+                this.socket.emit('alert',{title:'epic fail',msg:'You do not have permission to this command.',button:'WHY?!'})
+            }
         } catch(e) {
-            log.info.log('info', 'info', {
+            log.info.log('info', 'commandFail', {
                 guid: this.guid,
                 command: command,
-                ip: this.getIp(),
                 args: args,
                 reason: "unknown",
-                exception: e
+                exception: console.error(e)
             });
-            this.socket.emit('info', {
+            this.socket.emit('alert',{title:'oh fuck',msg:'That command does not exist.',button:'OK'})
+            this.socket.emit('commandFail', {
                 reason: "unknown"
             });
         }
